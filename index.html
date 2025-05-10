@@ -76,7 +76,7 @@
 
         // Group by location
         const locationGroups = {};
-        friends.forEach((friend) => {
+        friends.forEach(friend => {
           const key = `${friend.lat.toFixed(5)},${friend.lng.toFixed(5)}`;
           if (!locationGroups[key]) locationGroups[key] = [];
           locationGroups[key].push(friend);
@@ -94,7 +94,7 @@
             let lng = baseLng;
 
             if (group.length > 1) {
-              const angle = ((2 * Math.PI) / group.length) * index;
+              const angle = (2 * Math.PI / group.length) * index;
               const offset = 0.0001; // ~11 meters
               lat += Math.sin(angle) * offset;
               lng += Math.cos(angle) * offset;
