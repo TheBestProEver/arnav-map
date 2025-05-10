@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arnav Universities Map</title>
+    <style>
+      #map {
+        height: 100vh;
+        width: 70%;
+        float: left;
+      }
+      #sidebar {
+        width: 30%;
+        float: right;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="sidebar">
+      <h2>Friends by University</h2>
+      <ul id="friend-list"></ul>
+    </div>
+
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+
+    <script>
+      const friends = [
+        {
+          name: "Kritarth Modi",
+          university: "UIUC",
+          lat: 40.102,
+          lng: -88.2272,
+          info: "Major: ",
+        },
+        {
+          name: "Purvash Dangi",
+          university: "Northwestern University",
+          lat: 42.055984,
+          lng: -87.675171,
+          info: "Major: ",
+        },
+        {
+          name: "Annan Vora",
+          university: "Northwestern University",
+          lat: 42.055984,
+          lng: -87.675171,
+          info: "Major: Chemistry",
+        },
+        {
+          name: "Dheer",
+          university: "UIUC",
+          lat: 40.102,
+          lng: -88.2272,
+          info: "Major: ",
+        },
+        {
+          name: "Arnav Rai",
+          university: "University of Chicago",
+          lat: 41.7886,
+          lng: -87.5987,
+          info: "Major: Physics and CS",
+        },
+      ];
+
+      function initMap() {
+        const center = { lat: 39.8283, lng: -98.5795 }; // Center of USA
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 4,
+          center: center,
+        });
+
+        const locationGroups = {};
+        friends.forEach(friend => {
+          const key = `${friend.lat.toFixed(5)},${friend.lng.toFixed(5)}`;
+          if (!locationGroups[key]) locationGroups[key] = [];
+          locationGroups[key].push(friend);
+        });
+
+        const markers = [];
+
+        for (const key in locationGroups) {
+          const group = locationGroups[key];
+          const baseLat = parseFloat(key.split(",")[0]);
+          const baseLng = parseFloat(key.split(",")[1]);
+
+          group.forEach((friend, index) => {
+            let lat = baseLat;
+            let lng = baseLng;
+
+            if (group.length > 1) {
+              const angle = (2 * Math.PI / group.length) * index;
+              const offset = 0.0001; // ~11 meters
+              lat += Math.sin(angle) * offset;
+              lng += Math.cos(angle) * offset;
+            }
+
+            const marker = new google.maps.Marker({
+              position: { lat, lng },
+              title: friend.name,
+              label: {
+                text: friend.name,
+                color: "black",
+                fontSize: "12px",
+                fontWeight: "bold",
+              },
+              map: map,
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+              content: `<strong>${friend.name}</strong><br>${friend.university}<br>${friend.info}`,
+            });
+
+            marker.addListener("click", () => {
+              infowindow.open(map, marker);
+            });
+
+            markers.push(marker);
+
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${friend.name}</strong>: ${friend.university}<br>${friend.info}`;
+            document.getElementById("friend-list").appendChild(li);
+          });
+        }
+
+        new markerClusterer.MarkerClusterer({ map, markers });
+      }
+    </script>
+
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT_Wyj61XR-CUyQ8g9ualDCR-GKs1qg0g&callback=initMap"
+    ></script>
+  </body>
+</html>
