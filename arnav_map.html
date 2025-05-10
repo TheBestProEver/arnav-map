@@ -25,6 +25,7 @@
       <h2>Friends by University</h2>
       <ul id="friend-list"></ul>
     </div>
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 
     <script>
       const friends = [
@@ -75,12 +76,25 @@
         });
 
         friends.forEach((friend) => {
-          const marker = new google.maps.Marker({
-            position: { lat: friend.lat, lng: friend.lng },
-            map: map,
-            title: friend.name,
-            label: friend.name,
+          const markers = friends.map((friend) => {
+            const marker = new google.maps.Marker({
+              position: { lat: friend.lat, lng: friend.lng },
+              title: friend.name,
+              label: friend.name,
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+              content: `<strong>${friend.name}</strong><br>${friend.university}<br>${friend.info}`,
+            });
+
+            marker.addListener("click", () => {
+              infowindow.open(map, marker);
+            });
+
+            return marker;
           });
+
+          new markerClusterer.MarkerClusterer({ map, markers });
 
           const infowindow = new google.maps.InfoWindow({
             content: `<strong>${friend.name}</strong><br>${friend.university}<br>${friend.info}`,
