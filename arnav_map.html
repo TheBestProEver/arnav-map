@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arnav Universities Map</title>
+    <style>
+      #map {
+        height: 100vh;
+        width: 70%;
+        float: left;
+      }
+      #sidebar {
+        width: 30%;
+        float: right;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="sidebar">
+      <h2>Friends by University</h2>
+      <ul id="friend-list"></ul>
+    </div>
+
+    <script>
+      const friends = [
+        {
+          name: "Kritarth Modi",
+          university: "UIUC",
+          lat: 40.102,
+          lng: -88.2272,
+          info: "Major: ",
+        },
+        {
+          name: "Purvash Dangi",
+          university: "Northwestern University",
+          lat: 42.055984,
+          lng: -87.675171,
+          info: "Major: ",
+        },
+        {
+          name: "Annan Vora",
+          university: "Northwestern University",
+          lat: 42.055984,
+          lng: -87.675171,
+          info: "Major: Chemistry",
+        },
+        {
+          name: "Dheer",
+          university: "UIUC",
+          lat: 40.102,
+          lng: -88.2272,
+          info: "Major: ",
+        },
+
+        {
+          name: "Arnav Rai",
+          university: "University of Chicago",
+          lat: 41.7886,
+          lng: -87.5987,
+          info: "Major: Physics and CS",
+        },
+      ];
+
+      function initMap() {
+        const center = { lat: 39.8283, lng: -98.5795 }; // Center of the USA
+
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 4,
+          center: center,
+        });
+
+        friends.forEach((friend) => {
+          const marker = new google.maps.Marker({
+            position: { lat: friend.lat, lng: friend.lng },
+            map: map,
+            title: friend.name,
+            label: friend.name,
+          });
+
+          const infowindow = new google.maps.InfoWindow({
+            content: `<strong>${friend.name}</strong><br>${friend.university}<br>${friend.info}`,
+          });
+
+          marker.addListener("click", () => {
+            infowindow.open(map, marker);
+          });
+
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${friend.name}</strong>: ${friend.university}<br>${friend.info}`;
+          document.getElementById("friend-list").appendChild(li);
+        });
+      }
+    </script>
+
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT_Wyj61XR-CUyQ8g9ualDCR-GKs1qg0g&callback=initMap"
+    ></script>
+  </body>
+</html>
