@@ -74,7 +74,6 @@
           center: center,
         });
 
-        // Group by location
         const locationGroups = {};
         friends.forEach(friend => {
           const key = `${friend.lat.toFixed(5)},${friend.lng.toFixed(5)}`;
@@ -103,6 +102,13 @@
             const marker = new google.maps.Marker({
               position: { lat, lng },
               title: friend.name,
+              label: {
+                text: friend.name,
+                color: "black",
+                fontSize: "12px",
+                fontWeight: "bold",
+              },
+              map: map,
             });
 
             const infowindow = new google.maps.InfoWindow({
@@ -115,14 +121,12 @@
 
             markers.push(marker);
 
-            // Add to sidebar
             const li = document.createElement("li");
             li.innerHTML = `<strong>${friend.name}</strong>: ${friend.university}<br>${friend.info}`;
             document.getElementById("friend-list").appendChild(li);
           });
         }
 
-        // Add clustering
         new markerClusterer.MarkerClusterer({ map, markers });
       }
     </script>
